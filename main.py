@@ -47,6 +47,7 @@ def authorize_read_access(f):
         if has_access:
             return f(*args, **kws)
         else:
+            print "Unauthorized"
             json_response = {
                 "status": "failed"
             }
@@ -76,11 +77,11 @@ def public_api():
 @authorize_read_access
 def read_api():
     """ handler for the read_api endpoint can be access with read_only claim, can return extra custom scope"""
-    print "public_api()"
+    print "read_api()"
     
     json_response = {
         "status": "success",
-        "default_value": "Default Read - No Scope associated wth data",
+        "default_value": "Read Only",
         "timestamp": datetime.datetime.now()
     }
     
