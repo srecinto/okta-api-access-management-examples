@@ -28,7 +28,7 @@ def authorize_read_access(f):
     @wraps(f)
     def decorated_function(*args, **kws):
         """ Decorator fucntion to make endpoint authorization checks easier for read only scopes defined in Okta """
-        print "authorize_read_access()"
+        print("authorize_read_access()")
         authorization_header = None
         has_access = False
         # If 
@@ -47,7 +47,7 @@ def authorize_read_access(f):
         if has_access:
             return f(*args, **kws)
         else:
-            print "Unauthorized"
+            print("Unauthorized")
             json_response = {
                 "status": "failed"
             }
@@ -63,7 +63,7 @@ ROUTES #########################################################################
 @app.route('/public_api')
 def public_api():
     """ handler for the public_api endpoint can be access publically with no protection"""
-    print "public_api()"
+    print("public_api()")
     
     json_response = {
         "status": "success",
@@ -77,7 +77,7 @@ def public_api():
 @authorize_read_access
 def read_api():
     """ handler for the read_api endpoint can be access with read_only claim, can return extra custom scope"""
-    print "read_api()"
+    print("read_api()")
     
     json_response = {
         "status": "success",
@@ -94,7 +94,7 @@ CLIENT ROUTES ##################################################################
 @app.route('/call_read_api')
 def call_read_api():
     """ Calls the read_api endpoint as a client server/app would"""
-    print "call_read_api()"
+    print("call_read_api()")
     # Get Okta OAuth Token
     access_token = None
     json_response = {
@@ -108,7 +108,7 @@ def call_read_api():
         config.okta["oidc_client_id"])
     
     oauth_response = okta_util.execute_post(oauth_url, {}, okta_util.OKTA_OAUTH_HEADERS)
-    # print "oauth_response: {0}".format(json.dumps(oauth_response, indent=4, sort_keys=True))
+    print("oauth_response: {0}".format(json.dumps(oauth_response, indent=4, sort_keys=True)))
     if "access_token" in oauth_response:
         access_token = oauth_response["access_token"]
         # print "access_token: {0}".format(access_token)
@@ -119,6 +119,7 @@ def call_read_api():
             "Authorization": "Bearer {0}".format(access_token)
         }
         json_response = okta_util.execute_get("{0}/read_api".format(config.okta["app_host"]), {}, headers)
+        print("json_response: {0}".format(json.dumps(json_response, default=default_date_to_string_converter)))
     
     return json.dumps(json_response, default=default_date_to_string_converter)
 
@@ -128,5 +129,15 @@ MAIN ###########################################################################
 """
 if __name__ == "__main__":
     # This is to run on c9.io.. you may need to change or make your own runner
-    print "okta_config: {0}".format(json.dumps(config.okta, indent=4, sort_keys=True))
+    
+    config.okta["org_host"] = os.getenv("ORG_HOST", "")
+    config.okta["api_token"] = os.getenv("API_TOKEN", "")
+    config.okta["app_host"] = os.getenv("APP_HOST", "")
+    config.okta["oidc_client_id"] = os.getenv("OIDC_CLIENT_ID", "")
+    config.okta["oidc_client_secret"] = os.getenv("OIDC_CLIENT_SECRET", "")
+    config.okta["auth_server_id"] = os.getenv("AUTH_SERVER_ID", "")
+    
+    print("okta_config: {0}".format(json.dumps(config.okta, indent=4, sort_keys=True)))
+    
+    
     app.run(threaded=True, host=os.getenv("IP", "0.0.0.0"), port=int(os.getenv("PORT", 8080)))

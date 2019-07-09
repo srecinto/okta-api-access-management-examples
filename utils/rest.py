@@ -34,7 +34,7 @@ class OktaUtil:
         
         if "auth_server_id" in okta_config:
             self.AUTH_SERVER_ID = okta_config["auth_server_id"]
-            print "HAS AUTH SERVER: {0}".format(self.AUTH_SERVER_ID)
+            print("HAS AUTH SERVER: {0}".format(self.AUTH_SERVER_ID))
 
         self.OKTA_HEADERS = {
             "Accept": "application/json",
@@ -55,7 +55,7 @@ class OktaUtil:
                     client_secret=self.OIDC_CLIENT_SECRET))
         }
 
-        print "OKTA_OAUTH_HEADERS: {0}".format(self.OKTA_OAUTH_HEADERS)
+        print("OKTA_OAUTH_HEADERS: {0}".format(self.OKTA_OAUTH_HEADERS))
 
     def authenticate(self, username, password):
         print("authenticate()")
@@ -151,7 +151,7 @@ class OktaUtil:
         return self.execute_post(url, body)
 
     def introspect_oauth_token(self, oauth_token):
-        print "introspect_oauth_token()"
+        print("introspect_oauth_token()")
 
         auth_server = ""
 
@@ -167,8 +167,8 @@ class OktaUtil:
         return self.execute_post(url, body, self.OKTA_OAUTH_HEADERS)
 
     def get_oauth_token(self, oauth_code, redirect_uri):
-        print "get_oauth_token()"
-        print "oauth_code: {0}".format(oauth_code)
+        print("get_oauth_token()")
+        print("oauth_code: {0}".format(oauth_code))
         auth_server = ""
 
         if self.AUTH_SERVER_ID:
@@ -222,34 +222,34 @@ class OktaUtil:
         
 
     def assign_user_to_group(self, user_id, group_id):
-        print "assign_user_to_group()"
+        print("assign_user_to_group()")
         url = "{host}/api/v1/groups/{group_id}/users/{user_id}".format(host=self.REST_HOST, group_id=group_id, user_id=user_id)
         body = {}
 
         return self.execute_put(url, body)
 
     def get_user_groups(self, user_id):
-        print "get_user_groups()"
+        print("get_user_groups()")
         url = "{host}/api/v1/users/{user_id}/groups".format(host=self.REST_HOST, user_id=user_id)
         body = {}
 
         return self.execute_get(url, body)
 
     def create_group(self, group):
-        print "create_group()"
+        print("create_group()")
         url = "{host}/api/v1/groups".format(host=self.REST_HOST)
 
         return self.execute_post(url, group)
 
     def list_all_groups(self):
-        print "get_user_groups()"
+        print("get_user_groups()")
         url = "{host}/api/v1/groups".format(host=self.REST_HOST)
         body = {}
 
         return self.execute_get(url, body)
 
     def search_groups(self, group_name_prefix, limit):
-        print "search_groups()"
+        print("search_groups()")
         url = "{host}/api/v1/groups?q={group_name_prefix}&limit={limit}".format(
             host=self.REST_HOST,
             group_name_prefix=group_name_prefix,
@@ -259,7 +259,7 @@ class OktaUtil:
         return self.execute_get(url, body)
 
     def get_group(self, group_id):
-        print "get_group()"
+        print("get_group()")
         url = "{host}/api/v1/groups/{group_id}".format(
             host=self.REST_HOST,
             group_id=group_id)
@@ -268,7 +268,7 @@ class OktaUtil:
         return self.execute_get(url, body)
 
     def get_group_users(self, group_id):
-        print "get_group_users()"
+        print("get_group_users()")
         url = "{host}/api/v1/groups/{group_id}/users".format(
             host=self.REST_HOST,
             group_id=group_id)
@@ -277,7 +277,7 @@ class OktaUtil:
         return self.execute_get(url, body)
 
     def get_group_apps(self, group_id):
-        print "get_group_apps()"
+        print("get_group_apps()")
         url = "{host}/api/v1/groups/{group_id}/apps".format(
             host=self.REST_HOST,
             group_id=group_id)
@@ -320,7 +320,7 @@ class OktaUtil:
 
     def find_all_users_by_id(self, user_ids):
         results = {}
-        print "user_id count: {0}".format(len(user_ids))
+        print("user_id count: {0}".format(len(user_ids)))
         if len(user_ids) > 0:
             search_criteria = ""
             or_appender = ""
@@ -339,13 +339,13 @@ class OktaUtil:
         return results
 
     def create_user(self, user_data, activate_user=False):
-        print "create_user()"
+        print("create_user()")
         url = "{host}/api/v1/users?activate={activate_user}".format(host=self.REST_HOST, activate_user=activate_user)
 
         return self.execute_post(url, user_data)
 
     def forgot_password(self, user_login, relay_Url):
-        print "forgot_password()"
+        print("forgot_password()")
         url = "{host}/api/v1/authn/recovery/password".format(host=self.REST_HOST)
         body = {
             "username": user_login,
@@ -356,13 +356,13 @@ class OktaUtil:
         return self.execute_post(url, body=body)
 
     def activate_user(self, user_id):
-        print "activate_user()"
+        print("activate_user()")
         url = "{host}/api/v1/users/{user_id}/lifecycle/activate/?sendEmail=false".format(host=self.REST_HOST, user_id=user_id)
 
         return self.execute_post(url, body={})
 
     def update_user_credentials(self, user_id, password):
-        print "update_user_credentials()"
+        print("update_user_credentials()")
         url = "{host}/api/v1/users/{user_id}".format(host=self.REST_HOST, user_id=user_id)
         body = {
             "credentials": {
@@ -372,7 +372,7 @@ class OktaUtil:
         return self.execute_post(url, body=body)
 
     def update_user_mobile(self, user_id, phone):
-        print "update_user()"
+        print("update_user()")
         url = "{host}/api/v1/users/{user_id}".format(host=self.REST_HOST, user_id=user_id)
         body = {
             "profile": {
@@ -383,7 +383,7 @@ class OktaUtil:
         return self.execute_post(url, body)
 
     def update_user(self, user):
-        print "update_user()"
+        print("update_user()")
         url = "{host}/api/v1/users/{user_id}".format(host=self.REST_HOST, user_id=user["id"])
 
         return self.execute_post(url, user)
@@ -441,7 +441,7 @@ class OktaUtil:
 
     def find_all_apps_by_id(self, app_ids):
         results = {}
-        print "app_ids count: {0}".format(len(app_ids))
+        print("app_ids count: {0}".format(len(app_ids)))
         if len(app_ids) > 0:
             search_criteria = ""
             or_appender = ""
@@ -465,7 +465,7 @@ class OktaUtil:
         return self.execute_get(url, body)
 
     def assign_user_to_app(self, user_id, app_id):
-        print "assign_user_to_app()"
+        print("assign_user_to_app()")
         url = "{host}/api/v1/apps/{app_id}/users/{user_id}".format(host=self.REST_HOST, app_id=app_id, user_id=user_id)
         body = {}
 
@@ -477,8 +477,8 @@ class OktaUtil:
         return self.execute_get(url, body)
 
     def execute_post(self, url, body, headers=None):
-        print url
-        print body
+        print(url)
+        print(body)
 
         headers = self.reconcile_headers(headers)
 
@@ -492,8 +492,8 @@ class OktaUtil:
         return response_json
 
     def execute_put(self, url, body, headers=None):
-        print url
-        print body
+        print(url)
+        print(body)
 
         headers = self.reconcile_headers(headers)
 
@@ -507,8 +507,8 @@ class OktaUtil:
         return response_json
 
     def execute_delete(self, url, body, headers=None):
-        print url
-        print body
+        print(url)
+        print(body)
 
         headers = self.reconcile_headers(headers)
 
@@ -522,8 +522,8 @@ class OktaUtil:
         return response_json
 
     def execute_get(self, url, body, headers=None):
-        print url
-        print body
+        print(url)
+        print(body)
 
         headers = self.reconcile_headers(headers)
 
@@ -544,21 +544,21 @@ class OktaUtil:
         return headers
 
     def get_encoded_auth(self, client_id, client_secret):
-        print "get_encoded_auth()"
+        print("get_encoded_auth()")
         auth_raw = "{client_id}:{client_secret}".format(
             client_id=client_id,
             client_secret=client_secret
         )
 
-        print "auth_raw: {0}".format(auth_raw)
-        encoded_auth = base64.b64encode(auth_raw)
-        print "encoded_auth: {0}".format(encoded_auth)
+        print("auth_raw: {0}".format(auth_raw))
+        encoded_auth = base64.b64encode(bytes(auth_raw, 'UTF-8')).decode("UTF-8")
+        print("encoded_auth: {0}".format(encoded_auth))
 
         return encoded_auth
 
     def create_oidc_auth_code_url(self, session_token, client_id, redirect_uri):
-        print "create_oidc_auth_code_url"
-        print "session_token: {0}".format(session_token)
+        print("create_oidc_auth_code_url")
+        print("session_token: {0}".format(session_token))
         session_option = ""
         auth_server = ""
 
